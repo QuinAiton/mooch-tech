@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+
 import { Button } from 'components/Button';
 import { InterviewerList } from 'components/InterviewerList';
 
@@ -17,18 +18,12 @@ export const Form = (props) => {
     reset();
   };
 
-  // const save = () => {
-  //   props.onSave(name, interviewer);
-  //   setName(name);
-  // };
-
   function validate() {
     if (name === '') {
       setError('Student name cannot be blank');
       return;
     }
     setError('');
-    props.onSave(name, interviewer);
     setName(name);
   }
 

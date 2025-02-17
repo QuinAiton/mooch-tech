@@ -100,22 +100,7 @@ export const useApplicationData = () => {
   // Set the current day
   const setDay = (day) => dispatch({ type: SET_DAY, day });
 
-  // Book an interview by updating the appointment
-  const bookInterview = (id, interview) => {
-    const appointment = {
-      ...state.appointments[id],
-      interview: { ...interview },
-    };
-    const appointments = {
-      ...state.appointments,
-      [id]: appointment,
-    };
-
-    return axios.put(`api/appointments/${id}`, { interview }).then(() => {
-      const days = updateSpots(state.day, state.days, appointments);
-      dispatch({ type: SET_INTERVIEW, appointments, days });
-    });
-  };
+  //  TODO: need to be able to create and update appointments
 
   // Cancel an interview by removing the interview from the appointment
   const cancelInterview = (id) => {
@@ -137,5 +122,5 @@ export const useApplicationData = () => {
   };
 
   // Return application state and helper functions for interacting with the data
-  return { state, bookInterview, cancelInterview, setDay };
+  return { state, cancelInterview, setDay };
 };

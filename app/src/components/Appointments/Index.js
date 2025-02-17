@@ -1,13 +1,15 @@
-import React, { useEffect } from 'react';
 import 'components/Appointments/styles.scss';
+
+import React, { useEffect } from 'react';
+
+import { Confirm } from 'components/Appointments/Confirm';
+import { Empty } from 'components/Appointments/Empty';
+import { Error } from 'components/Appointments/Error';
+import { Form } from 'components/Appointments/Form';
 import { Header } from 'components/Appointments/Header';
 import { Show } from 'components/Appointments/Show';
-import { Empty } from 'components/Appointments/Empty';
-import { Form } from 'components/Appointments/Form';
-import { useVisualMode } from '../../hooks/useVisualMode';
 import { Status } from 'components/Appointments/Status';
-import { Confirm } from 'components/Appointments/Confirm';
-import { Error } from 'components/Appointments/Error';
+import { useVisualMode } from '../../hooks/useVisualMode';
 
 export const Appointment = (props) => {
   const EMPTY = 'EMPTY',
@@ -34,38 +36,18 @@ export const Appointment = (props) => {
     }
   }, [props.interview, transition, mode]);
 
-  const save = (name, interviewer) => {
-    if (!name || !interviewer) {
-      transition(ERROR_EMPTY);
-      return;
-    }
-    transition(SAVING);
-    const interview = {
-      student: name,
-      interviewer,
-    };
-
-    props
-      .bookInterview(props.id, interview)
-      .then(() => {
-        transition(SHOW);
-      })
-      .catch(() => {
-        transition(ERROR_SAVE, true);
-      });
-  };
-
-  const onDelete = () => {
+  const onDelete = async () => {
     transition(DELETE, true);
-    props
-      .cancelInterview(props.id)
-      .then(() => {
-        transition(EMPTY);
-      })
-      .catch(() => {
-        transition(ERROR_DELETE, true);
-      });
+    try {
+      await props.cancelInterview(props.id);
+      transition(EMPTY);
+    } catch (error) {
+      transition(ERROR_DELETE, true);
+    }
   };
+
+  // TODO: Need to be able to create and update Interviews
+
   return (
     <article className='appointment' data-testid='appointment'>
       <Header time={props.time} />
@@ -86,7 +68,7 @@ export const Appointment = (props) => {
       )}
       {mode === ERROR_EMPTY && (
         <Error
-          message='Please Fill Out All The Feilds'
+          message='Please Fill Out All The Fields'
           onClose={() => back()}
         />
       )}
@@ -100,7 +82,6 @@ export const Appointment = (props) => {
       {mode === CREATE && (
         <Form
           interviewers={props.interviewers}
-          onSave={save}
           onCancel={() => back()}
         />
       )}
@@ -117,7 +98,6 @@ export const Appointment = (props) => {
           name={props.interview.student}
           interviewer={props.interviewer}
           interviewers={props.interviewers}
-          onSave={save}
           onCancel={() => back()}
         />
       )}

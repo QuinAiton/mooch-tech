@@ -1,7 +1,8 @@
-import React from 'react';
 import 'components/Application.scss';
-import { DayList } from './DayList';
+
 import { Appointment } from './Appointments/Index';
+import { DayList } from './DayList';
+import React from 'react';
 import { getAppointmentsForDay } from '../helpers/selectors';
 import { getInterview } from '../helpers/selectors';
 import { getInterviewersForDay } from '../helpers/selectors';
@@ -11,26 +12,17 @@ export default function Application() {
   const {
     state,
     setDay,
-    bookInterview,
     cancelInterview,
   } = useApplicationData();
 
   const interviewersForDay = getInterviewersForDay(state, state.day);
   const appointments = getAppointmentsForDay(state, state.day);
 
-  const schedule = appointments.map((appointment) => {
-    const interview = getInterview(state, appointment.interview);
-    return (
-      <Appointment
-        key={appointment.id}
-        interviewers={interviewersForDay}
-        interviewer={interview}
-        {...appointment}
-        bookInterview={bookInterview}
-        cancelInterview={cancelInterview}
-      />
-    );
-  });
+
+  // TODO: need to display all the interview data from the database. 
+  // Some helper functions that may help with this are Appointment component and getInterview function
+
+
 
   return (
     <main className='layout'>
@@ -51,7 +43,6 @@ export default function Application() {
         />
       </section>
       <section className='schedule'>
-        {schedule}, <Appointment key='last' time='5pm' />
       </section>
     </main>
   );
